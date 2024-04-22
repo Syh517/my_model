@@ -4,6 +4,8 @@ import torch.nn.functional as F
 import math
 import numpy as np
 
+from Classifiers.LGFF import LGFF
+
 # class SampaddingConv1D_BN(nn.Module):
 #     def __init__(self,in_channels,out_channels,kernel_size):
 #         super(SampaddingConv1D_BN, self).__init__()
@@ -131,6 +133,12 @@ class OS_CNN(nn.Module):
             out_put_channel_numebr = out_put_channel_numebr+ final_layer_parameters[1]
             # print(final_layer_parameters) #(225,280,1) (225,280,2)
 
+
+        #特征融合
+        ffn_expansion_factor = 1
+        self.multi_scale_fusion_level = LGFF(out_put_channel_numebr, out_put_channel_numebr, ffn_expansion_factor,
+                                             bias=False)
+
         self.hidden = nn.Linear(out_put_channel_numebr, n_class) #全连接层，out_put_channel_number在concatenate后有变化
 
     def forward(self, X1, X2): #train时调用
@@ -139,7 +147,13 @@ class OS_CNN(nn.Module):
         X2 = self.net_2(X2)  # OS-BLock获得低维度特征
 
         #通过OS-Block得到低维度特征后，进行特征的拼接
-        X=torch.cat((X1,X2),2)
+        # X=torch.concat((X1,X2),2) #initial method
+
+        # 新的LGFF特征融合方法
+        X = torch.cat((X1, X2), 2)
+        X = X.unsqueeze_(2)
+        X = self.multi_scale_fusion_level(X)
+        X=X.squeeze_(2)
 
         X = self.averagepool(X) #Global average pooling
         X = X.squeeze_(-1) #若X最后一维是1维，就把X压缩

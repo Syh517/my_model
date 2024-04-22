@@ -1,8 +1,6 @@
 import os
-from sklearn.metrics import accuracy_score
-from os.path import dirname
 import numpy as np
-from metric import metrics
+from Classifiers.metric import metrics
 
 
 def eval_condition(iepoch,print_result_every_x_epoch):

@@ -87,7 +87,7 @@ class OS_block(nn.Module):
                 using_relu = True
             else:
                 using_relu = self.relu_or_not_at_last_layer
-                
+
             layer = build_layer_with_layer_parameter(layer_parameter_list[i],using_relu)
             self.layer_list.append(layer)
         

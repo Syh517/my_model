@@ -76,7 +76,6 @@ class OS_CNN_res(nn.Module):
         self.hidden = nn.Linear(out_put_channel_numebr, n_class)
 
     def forward(self, X):
-        
         temp = self.net_1(X)
         temp = self.net(temp)
         X = self.averagepool(temp)
@@ -84,5 +83,6 @@ class OS_CNN_res(nn.Module):
 
         if not self.few_shot:
             X = self.hidden(X)
+
         return X
         

@@ -1,14 +1,10 @@
-import os
-from os.path import dirname
 from Classifiers.OS_CNN_2.OS_CNN_easy_use_2 import OS_CNN_easy_use as TwoNet_OS_CNN_easy_use
 from Classifiers.OS_CNN_2.OS_CNN_res_easy_use_2 import OS_CNN_easy_use as TwoNet_OS_CNN_res_easy_use
 from Classifiers.OS_CNN_3.OS_CNN_easy_use_3 import OS_CNN_easy_use as OneNet_OS_CNN_easy_use
 from Classifiers.OS_CNN_3.OS_CNN_res_easy_use_3 import OS_CNN_easy_use as OneNet_OS_CNN_res_easy_use
-from sklearn.metrics import accuracy_score
-from ts_img import final_MTF
 import numpy as np
 from scipy import io
-from metric import metrics
+from Classifiers.metric import metrics
 
 Result_log_folder = './Example_Results_of_OS_CNN_for_multivariate/'
 dataset_path='./ServerMachineDataset/'
@@ -55,7 +51,7 @@ if __name__ == '__main__':
     # OneNet_OS_CNN_easy_use
     # OneNet_OS_CNN_res_easy_use
 
-    model = OneNet_OS_CNN_easy_use(
+    model = TwoNet_OS_CNN_res_easy_use(
         Result_log_folder=Result_log_folder,  # the Result_log_folder
         dataset_name=dataset_name,  # dataset_name for creat log under Result_log_folder
         device="cuda:0",  # Gpu

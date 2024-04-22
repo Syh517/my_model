@@ -133,7 +133,7 @@ class OS_CNN(nn.Module):
         X2 = self.net(X2)  # OS-BLock获得低维度特征
 
         #通过OS-Block得到低维度特征后，进行特征的拼接
-        X=torch.cat((X1,X2),2)
+        X=torch.concat((X1,X2),2)
 
         X = self.averagepool(X) #Global average pooling
         X = X.squeeze_(-1) #若X最后一维是1维，就把X压缩

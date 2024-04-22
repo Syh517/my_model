@@ -5,6 +5,8 @@ import math
 import numpy as np
 from .OS_block import OS_block
 
+from Classifiers.LGFF import LGFF
+
 def layer_parameter_list_input_change(layer_parameter_list, input_channel):
     
     new_layer_parameter_list = []
@@ -78,7 +80,10 @@ class OS_CNN_res(nn.Module):
             self.net_list_2.append(temp_layer)
         self.net2 = nn.Sequential(*self.net_list_2)  # 把所有OS-Block顺序相连，形成网络
 
-
+        # 特征融合
+        ffn_expansion_factor = 1
+        self.multi_scale_fusion_level = LGFF(out_put_channel_numebr, out_put_channel_numebr, ffn_expansion_factor,
+                                             bias=False)
 
 
         self.averagepool = nn.AdaptiveAvgPool1d(1)
@@ -92,9 +97,17 @@ class OS_CNN_res(nn.Module):
         temp2 = self.net2_1(X2)
         temp2 = self.net2(temp2)
 
-        temp = torch.cat((temp1, temp2), 2)
+        # 通过OS-Block得到低维度特征后，进行特征的拼接
+        # X = torch.concat((temp1, temp2), 2) #initial method
 
-        X = self.averagepool(temp)
+        # 新的LGFF特征融合方法
+        X = torch.cat((temp1, temp2), 2)
+        X = X.unsqueeze_(2)
+        X = self.multi_scale_fusion_level(X)
+        X = X.squeeze_(2)
+
+
+        X = self.averagepool(X)
         X = X.squeeze_(-1)
 
         if not self.few_shot:
