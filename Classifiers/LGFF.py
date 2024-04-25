@@ -5,6 +5,7 @@ import torch.nn.functional as F
 import numbers
 from einops import rearrange
 
+
 ## Layer Norm
 
 def to_3d(x):
@@ -99,8 +100,11 @@ class LGFF(nn.Module):
 
 
 
-# self.multi_scale_fusion_level = LGFF(out_put_channel_numebr, out_put_channel_numebr, ffn_expansion_factor, bias=False)
+# ffn_expansion_factor = 1
+# self.fusion_mode = LGFF(out_put_channel_numebr, out_put_channel_numebr, ffn_expansion_factor, bias=False)
 
-        X=torch.cat((X1,X2),2)
-        X=X.unsqueeze_(1)
-        X=self.multi_scale_fusion_level(X)
+        # X = torch.cat((X1,X2),2)
+        # X = X.unsqueeze_(2)
+        # X = self.fusion_mode(X)
+        # X = X.squeeze_(2)
+

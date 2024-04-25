@@ -4,8 +4,7 @@ import torch.nn.functional as F
 import math
 import numpy as np
 from .OS_block import OS_block
-
-from Classifiers.LGFF import LGFF
+from Classifiers.AFF import MS_CAM
 
 def layer_parameter_list_input_change(layer_parameter_list, input_channel):
     
@@ -80,10 +79,8 @@ class OS_CNN_res(nn.Module):
             self.net_list_2.append(temp_layer)
         self.net2 = nn.Sequential(*self.net_list_2)  # 把所有OS-Block顺序相连，形成网络
 
-        # 特征融合
-        ffn_expansion_factor = 1
-        self.multi_scale_fusion_level = LGFF(out_put_channel_numebr, out_put_channel_numebr, ffn_expansion_factor,
-                                             bias=False)
+        # MS_CAM特征融合
+        self.fusion_mode = MS_CAM(out_put_channel_numebr)
 
 
         self.averagepool = nn.AdaptiveAvgPool1d(1)
@@ -100,10 +97,10 @@ class OS_CNN_res(nn.Module):
         # 通过OS-Block得到低维度特征后，进行特征的拼接
         # X = torch.concat((temp1, temp2), 2) #initial method
 
-        # 新的LGFF特征融合方法
-        X = torch.cat((temp1, temp2), 2)
+        # 新的MS_CAM特征融合方法
+        X = torch.concat((temp1, temp2), 2)
         X = X.unsqueeze_(2)
-        X = self.multi_scale_fusion_level(X)
+        X = self.fusion_mode(X)
         X = X.squeeze_(2)
 
 

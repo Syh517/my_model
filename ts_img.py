@@ -91,7 +91,7 @@ def multi_markov_transition_field(X_binned, Y_binned, XY_mtm, n_timestamps):
 #求单变量的马尔可夫转移场矩阵
 def single_MTF(data,i,n_timestamps,n_bins):
     # 提取一个单变量
-    V = data[:n_timestamps, i].reshape(1, -1)
+    V = data[:, i].reshape(1, -1)
     # shows_ts(V,i)
 
     #数据离散化并分桶
@@ -123,8 +123,8 @@ def single_MTF(data,i,n_timestamps,n_bins):
 #求双变量的马尔可夫转移场矩阵
 def multi_MTF(data, i, j, n_timestamps, n_bins):
     #提取两个变量
-    X = data[:n_timestamps, i].reshape(1, -1)
-    Y = data[:n_timestamps, j].reshape(1, -1)
+    X = data[:, i].reshape(1, -1)
+    Y = data[:, j].reshape(1, -1)
 
     #数据离散化并分桶
     discretizer = KBinsDiscretizer(n_bins=n_bins, strategy='quantile')
@@ -158,7 +158,7 @@ def multi_MTF(data, i, j, n_timestamps, n_bins):
     return XY_mtf
 
 
-def final_MTF(X,n_timestamps, n_bins,p): #X:(2800,38)
+def final_MTF(X,n_timestamps, n_bins,p): #X:(n_timestamps,38)
     F_MTF = np.zeros((n_timestamps, n_timestamps))
     for i in range(X.shape[1]): #38
         self_MTF=single_MTF(X, i, n_timestamps, n_bins)
@@ -178,11 +178,11 @@ data_path='./ServerMachineDataset/'
 save_path = './ServerMachineDataset/save/'
 dataset_name_list = [
     # '1-1',
-    # '1-2',
-    # '1-3',
-    '1-4',
+    '1-2',
+    '1-3',
+    # '1-4',
     # '1-5',
-    '1-6',
+    # '1-6',
     # '1-7',
     # '1-8',
     # '2-1',
@@ -210,10 +210,14 @@ dataset_name_list = [
 
 if __name__ == '__main__':
 
-    N=500
+    N=10000
     #设置时间戳长度和分类的桶数
     n_timestamps =N
     n_bins = 8
+
+    #设置开始和结束
+    start=0
+    end=start+n_timestamps
 
     #设置时序数据转MTF矩阵的矩阵权重参数
     p=[0.5,0.5]
@@ -222,20 +226,21 @@ if __name__ == '__main__':
     if not os.path.exists(save_path):
         os.makedirs(save_path)
 
-    #将所有数据转换成2类矩阵并存放在.mat文件中
+    # 将所有数据转换成2类矩阵并存放在.mat文件中
     for dataset_name in dataset_name_list:
         X = np.loadtxt(data_path + 'test/machine-'+dataset_name+'.txt', dtype=np.float32, delimiter=',') #获取数据集数据
-        X1=X[:n_timestamps,:].reshape((n_timestamps, 1, X.shape[1])) #获取时序数据矩阵并升维
-        X2 = final_MTF(X, n_timestamps, n_bins, p) #将时序数据矩阵转换成MTF矩阵
-        savemat(save_path + 'machine-' + dataset_name + '.mat', {'A': X1,'B':X2}) #存放两个矩阵于对应文件中
+        X1=X[start:end,:] #获取时序数据矩阵
+        X2 = final_MTF(X1, n_timestamps, n_bins, p) #将时序数据矩阵转换成MTF矩阵
+        X1 = X1.reshape((n_timestamps, 1, X.shape[1])) #时序数据矩阵升维
+        Y = np.loadtxt(data_path + 'test_label/machine-'+dataset_name+'.txt')
+        Y=Y[start:end]
+        savemat(save_path + 'machine-' + dataset_name + '.mat', {'A': X1,'B':X2,'C':Y}) #存放两个矩阵于对应文件中
         print(save_path + 'machine-'+dataset_name+'.mat')
 
 
-    # variables = io.loadmat(save_path + 'machine-'+'1-1'+'.mat')
+    # variables = io.loadmat(save_path + 'machine-'+'1-6'+'.mat')
     # print(variables)
     # print(variables['A'].shape)
     # print(variables['B'].shape)
-
-
-
+    # print(variables['C'][0].shape)
 

@@ -18,9 +18,21 @@ def metrics(y_true,y_pred):
             else:
                 FN+=1
 
-    Precision=TP/(TP+FP)
-    Recall=TP/(TP+FN)
-    F1=2*Precision*Recall/(Precision+Recall)
+    # print(TP,TN,FP,FN)
+    if TP+FP==0:
+        Precision='NULL'
+    else:
+        Precision=TP/(TP+FP)
+
+    if TP +FN ==0:
+        Recall='NULL'
+    else:
+        Recall=TP/(TP+FN)
+
+    if Precision=='NULL' or Recall=='NULL' or Precision+Recall==0:
+        F1='NULL'
+    else:
+        F1=2*Precision*Recall/(Precision+Recall)
 
     t= {}
     t['Precision']=Precision

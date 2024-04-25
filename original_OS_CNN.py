@@ -13,19 +13,16 @@ if __name__ == '__main__':
     variables = io.loadmat(save_path + 'machine-1-4.mat')
     # X_train = variables['A'] #读取时序数据X_train
     X_train=variables['B'] #读取MTF矩阵X_trian
-    X_train=np.float32(X_train)
-
-    y_train = np.loadtxt(dataset_path+'test_label/machine-1-4.txt')
-    y_train = y_train[:X_train.shape[0]]
-    y_train=np.int64(y_train)
+    y_train=variables['C'][0]
 
     variables = io.loadmat(save_path + 'machine-1-6.mat')
     # X_test = variables['A'] #读取时序数据X_test
     X_test = variables['B']  # 读取MTF矩阵X_test
-    X_test=np.float32(X_test)
+    y_test=variables['C'][0]
 
-    y_test = np.loadtxt(dataset_path+'test_label/machine-1-6.txt')
-    y_test = y_test[:X_test.shape[0]]
+    X_train=np.float32(X_train)
+    y_train=np.int64(y_train)
+    X_test=np.float32(X_test)
     y_test = np.int64(y_test)
 
 

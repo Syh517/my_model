@@ -1,7 +1,10 @@
-from Classifiers.OS_CNN_2.OS_CNN_easy_use_2 import OS_CNN_easy_use as TwoNet_OS_CNN_easy_use
-from Classifiers.OS_CNN_2.OS_CNN_res_easy_use_2 import OS_CNN_easy_use as TwoNet_OS_CNN_res_easy_use
-from Classifiers.OS_CNN_3.OS_CNN_easy_use_3 import OS_CNN_easy_use as OneNet_OS_CNN_easy_use
-from Classifiers.OS_CNN_3.OS_CNN_res_easy_use_3 import OS_CNN_easy_use as OneNet_OS_CNN_res_easy_use
+from Classifiers.OS_CNN_2.OS_CNN_easy_use_2 import OS_CNN_easy_use as TwoNet_MS_CAM
+from Classifiers.OS_CNN_2.OS_CNN_res_easy_use_2 import OS_CNN_easy_use as TwoNet_res_MS_CAM
+from Classifiers.OS_CNN_3.OS_CNN_easy_use_3 import OS_CNN_easy_use as OneNet_Concat
+from Classifiers.OS_CNN_3.OS_CNN_res_easy_use_3 import OS_CNN_easy_use as OneNet_res_Concat
+from Classifiers.OS_CNN_4.OS_CNN_easy_use_4 import OS_CNN_easy_use as OneNet_MS_CAM
+from Classifiers.OS_CNN_4.OS_CNN_res_easy_use_4 import OS_CNN_easy_use as OneNet_res_MS_CAM
+
 import numpy as np
 from scipy import io
 from Classifiers.metric import metrics
@@ -15,22 +18,20 @@ dataset_name='ServerMachineDataset'
 if __name__ == '__main__':
     variables = io.loadmat(save_path + 'machine-1-4.mat')
     X1_train = variables['A'] #读取时序数据X_train
-    X2_train=variables['B'] #读取MTF矩阵X_trian
-    X1_train=np.float32(X1_train)
-    X2_train = np.float32(X2_train)
+    X2_train = variables['B'] #读取MTF矩阵X_trian
+    y_train = variables['C'][0] #读取标签y_train
 
-    y_train = np.loadtxt(dataset_path+'test_label/machine-1-4.txt')
-    y_train = y_train[:X1_train.shape[0]]
-    y_train=np.int64(y_train)
+    X1_train = np.float32(X1_train)
+    X2_train = np.float32(X2_train)
+    y_train = np.int64(y_train)
 
     variables = io.loadmat(save_path + 'machine-1-6.mat')
     X1_test = variables['A'] #读取时序数据X_test
     X2_test = variables['B']  # 读取MTF矩阵X_test
+    y_test = variables['C'][0] #读取标签y_test
+
     X1_test=np.float32(X1_test)
     X2_test = np.float32(X2_test)
-
-    y_test = np.loadtxt(dataset_path+'test_label/machine-1-6.txt')
-    y_test = y_test[:X1_test.shape[0]]
     y_test = np.int64(y_test)
 
 
@@ -46,12 +47,17 @@ if __name__ == '__main__':
 
     # creat model and log save place
 
-    # TwoNet_OS_CNN_easy_use
-    # TwoNet_OS_CNN_res_easy_use
-    # OneNet_OS_CNN_easy_use
-    # OneNet_OS_CNN_res_easy_use
+    # 2
+    # TwoNet_MS_CAM
+    # TwoNet_res_MS_CAM
+    # 3
+    # OneNet_Concat
+    # OneNet_res_Concat
+    # 4
+    # OneNet_MS_CAM
+    # OneNet_res_MS_CAM
 
-    model = TwoNet_OS_CNN_res_easy_use(
+    model = OneNet_MS_CAM(
         Result_log_folder=Result_log_folder,  # the Result_log_folder
         dataset_name=dataset_name,  # dataset_name for creat log under Result_log_folder
         device="cuda:0",  # Gpu

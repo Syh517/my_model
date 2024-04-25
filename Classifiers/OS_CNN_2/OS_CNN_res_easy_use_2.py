@@ -25,7 +25,7 @@ class OS_CNN_easy_use():
                  max_epoch = 2000, 
                  batch_size=16,
                  print_result_every_x_epoch = 50,
-                 n_OS_layer = 3,
+                 n_OS_layer = 3, #可以修改层数
                  lr = None
                 ):
         

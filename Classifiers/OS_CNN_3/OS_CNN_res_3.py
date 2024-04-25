@@ -82,9 +82,9 @@ class OS_CNN_res(nn.Module):
         temp2 = self.net_1(X2)
         temp2 = self.net(temp2)
 
-        temp = torch.concat((temp1, temp2), 2)
+        X = torch.concat((temp1, temp2), 2)
 
-        X = self.averagepool(temp)
+        X = self.averagepool(X)
         X = X.squeeze_(-1)
 
         if not self.few_shot:
