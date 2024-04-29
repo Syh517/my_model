@@ -24,7 +24,7 @@ class OS_CNN_easy_use():
                  paramenter_number_of_layer_list = [8*128, 5*128*256 + 2*256*128], 
                  max_epoch = 2000, 
                  batch_size=16,
-                 print_result_every_x_epoch = 50,
+                 print_result_every_x_epoch = 10,
                  lr = 0.001
                 ):
         
@@ -124,6 +124,7 @@ class OS_CNN_easy_use():
 
         
         for i in range(self.max_epoch): #开始训练
+            print("epoch:" + str(i))
             for sample in train_loader: #遍历每条train时序数据
                 optimizer.zero_grad() #清空模型参数的梯度，以确保每次迭代的梯度计算都是基于当前小批量数据的，而不会受之前迭代的影响。这是为了避免在优化过程中梯度的不正确累积。
                 y_predict = torch_OS_CNN(sample[0],sample[1]) #得到模型预测的label
@@ -141,9 +142,9 @@ class OS_CNN_easy_use():
                 torch_OS_CNN.train() #继续开启train模式
 
                 print('train_Precision:', metric_train['Precision'], '\t train_Recall:', metric_train['Recall'],
-                      '\t train_F1:', metric_train['F1'])
+                      '\t train_F1:', metric_train['F1'], '\t train_Accuracy:', metric_train['Accuracy'])
                 print('test_Precision:', metric_test['Precision'], '\t test_Recall:', metric_test['Recall'],
-                      '\t test_F1:', metric_test['F1'])
+                      '\t test_F1:', metric_test['F1'], '\t train_Accuracy:', metric_train['Accuracy'])
                 print('loss:', output.item())
                 sentence = 'train_F1=\t' + str(metric_train['F1']) + '\t test_F1=\t' + str(metric_test['F1'])
 

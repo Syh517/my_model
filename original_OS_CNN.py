@@ -10,14 +10,14 @@ dataset_name='ServerMachineDataset'
 
 
 if __name__ == '__main__':
-    variables = io.loadmat(save_path + 'machine-1-4.mat')
-    # X_train = variables['A'] #读取时序数据X_train
-    X_train=variables['B'] #读取MTF矩阵X_trian
+    variables = io.loadmat(save_path + 'machine-1-8.mat')
+    X_train = variables['A'] #读取时序数据X_train
+    # X_train=variables['B'] #读取MTF矩阵X_trian
     y_train=variables['C'][0]
 
-    variables = io.loadmat(save_path + 'machine-1-6.mat')
-    # X_test = variables['A'] #读取时序数据X_test
-    X_test = variables['B']  # 读取MTF矩阵X_test
+    variables = io.loadmat(save_path + 'machine-2-4.mat')
+    X_test = variables['A'] #读取时序数据X_test
+    # X_test = variables['B']  # 读取MTF矩阵X_test
     y_test=variables['C'][0]
 
     X_train=np.float32(X_train)
@@ -48,7 +48,10 @@ if __name__ == '__main__':
 
     y_predict = model.predict(X_test)
 
-    # print('correct:', y_test)
-    # print('predict:', y_predict)
+    print('correct:', y_test)
+    print('predict:', y_predict)
+    print('correct:', sum(y_test))
+    print('predict:', sum(y_predict))
+
     t = metrics(y_test, y_predict)
-    print('Precision:',t['Precision'],'\nRecall:',t['Recall'],'\nF1:',t['F1'])
+    print('Precision:',t['Precision'],'\nRecall:',t['Recall'],'\nF1:',t['F1'],'\nAccuracy:',t['Accuracy'])

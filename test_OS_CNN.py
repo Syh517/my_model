@@ -16,7 +16,7 @@ dataset_name='ServerMachineDataset'
 
 
 if __name__ == '__main__':
-    variables = io.loadmat(save_path + 'machine-1-4.mat')
+    variables = io.loadmat(save_path + 'machine-1-8.mat')
     X1_train = variables['A'] #读取时序数据X_train
     X2_train = variables['B'] #读取MTF矩阵X_trian
     y_train = variables['C'][0] #读取标签y_train
@@ -25,7 +25,7 @@ if __name__ == '__main__':
     X2_train = np.float32(X2_train)
     y_train = np.int64(y_train)
 
-    variables = io.loadmat(save_path + 'machine-1-6.mat')
+    variables = io.loadmat(save_path + 'machine-2-4.mat')
     X1_test = variables['A'] #读取时序数据X_test
     X2_test = variables['B']  # 读取MTF矩阵X_test
     y_test = variables['C'][0] #读取标签y_test
@@ -57,7 +57,7 @@ if __name__ == '__main__':
     # OneNet_MS_CAM
     # OneNet_res_MS_CAM
 
-    model = OneNet_MS_CAM(
+    model = OneNet_res_Concat(
         Result_log_folder=Result_log_folder,  # the Result_log_folder
         dataset_name=dataset_name,  # dataset_name for creat log under Result_log_folder
         device="cuda:0",  # Gpu
@@ -73,4 +73,4 @@ if __name__ == '__main__':
     # print('correct:', y_test)
     # print('predict:', y_predict)
     t = metrics(y_test, y_predict)
-    print('Precision:', t['Precision'], '\nRecall:', t['Recall'], '\nF1:', t['F1'])
+    print('Precision:',t['Precision'],'\nRecall:',t['Recall'],'\nF1:',t['F1'],'\nAccuracy:',t['Accuracy'])
