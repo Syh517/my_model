@@ -149,7 +149,7 @@ class OS_CNN_easy_use():
                 print('train_Precision:', metric_train['Precision'], '\t train_Recall:', metric_train['Recall'],
                       '\t train_F1:', metric_train['F1'], '\t train_Accuracy:', metric_train['Accuracy'])
                 print('test_Precision:', metric_test['Precision'], '\t test_Recall:', metric_test['Recall'],
-                      '\t test_F1:', metric_test['F1'], '\t train_Accuracy:', metric_train['Accuracy'])
+                      '\t test_F1:', metric_test['F1'], '\t test_Accuracy:', metric_test['Accuracy'])
                 print('loss:', output.item())
                 sentence = 'train_F1=\t' + str(metric_train['F1']) + '\t test_F1=\t' + str(metric_test['F1'])
 

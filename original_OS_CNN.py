@@ -11,13 +11,13 @@ dataset_name='ServerMachineDataset'
 
 if __name__ == '__main__':
     variables = io.loadmat(save_path + 'machine-1-8.mat')
-    X_train = variables['A'] #读取时序数据X_train
-    # X_train=variables['B'] #读取MTF矩阵X_trian
+    # X_train = variables['A'] #读取时序数据X_train
+    X_train=variables['B'] #读取MTF矩阵X_trian
     y_train=variables['C'][0]
 
     variables = io.loadmat(save_path + 'machine-2-4.mat')
-    X_test = variables['A'] #读取时序数据X_test
-    # X_test = variables['B']  # 读取MTF矩阵X_test
+    # X_test = variables['A'] #读取时序数据X_test
+    X_test = variables['B']  # 读取MTF矩阵X_test
     y_test=variables['C'][0]
 
     X_train=np.float32(X_train)
@@ -39,7 +39,7 @@ if __name__ == '__main__':
         Result_log_folder=Result_log_folder,  # the Result_log_folder
         dataset_name=dataset_name,  # dataset_name for creat log under Result_log_folder
         device="cuda:0",  # Gpu
-        max_epoch=500,
+        max_epoch=501,
         # In our expirement the number is 2000 for keep it same with FCN for the example dataset 500 will be enough
         paramenter_number_of_layer_list=[8 * 128 * X_train.shape[1], 5 * 128 * 256 + 2 * 256 * 128] #两种X_train参数是一样的
     )

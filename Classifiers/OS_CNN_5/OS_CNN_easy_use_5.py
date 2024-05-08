@@ -11,7 +11,7 @@ from torch.utils.data import TensorDataset
 
 from .OS_CNN_Structure_build import generate_layer_parameter_list
 from .log_manager import eval_condition, eval_model_2, save_to_log
-from .OS_CNN_2 import OS_CNN
+from .OS_CNN_5 import OS_CNN
 
 
 class OS_CNN_easy_use():

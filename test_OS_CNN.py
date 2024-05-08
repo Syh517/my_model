@@ -4,6 +4,8 @@ from Classifiers.OS_CNN_3.OS_CNN_easy_use_3 import OS_CNN_easy_use as OneNet_Con
 from Classifiers.OS_CNN_3.OS_CNN_res_easy_use_3 import OS_CNN_easy_use as OneNet_res_Concat
 from Classifiers.OS_CNN_4.OS_CNN_easy_use_4 import OS_CNN_easy_use as OneNet_MS_CAM
 from Classifiers.OS_CNN_4.OS_CNN_res_easy_use_4 import OS_CNN_easy_use as OneNet_res_MS_CAM
+from Classifiers.OS_CNN_5.OS_CNN_easy_use_5 import OS_CNN_easy_use as TwoNet_Concat
+from Classifiers.OS_CNN_5.OS_CNN_res_easy_use_5 import OS_CNN_easy_use as TwoNet_res_Concat
 
 import numpy as np
 from scipy import io
@@ -56,12 +58,15 @@ if __name__ == '__main__':
     # 4
     # OneNet_MS_CAM
     # OneNet_res_MS_CAM
+    # 5
+    # TwoNet_Concat
+    # TwoNet_res_Concat
 
-    model = OneNet_res_Concat(
+    model = TwoNet_res_Concat(
         Result_log_folder=Result_log_folder,  # the Result_log_folder
         dataset_name=dataset_name,  # dataset_name for creat log under Result_log_folder
         device="cuda:0",  # Gpu
-        max_epoch=500,
+        max_epoch=501,
         # In our expirement the number is 2000 for keep it same with FCN for the example dataset 500 will be enough
         paramenter_number_of_layer_list=[8 * 128 * X1_train.shape[1], 5 * 128 * 256 + 2 * 256 * 128] #两种X_train参数是一样的
     )
