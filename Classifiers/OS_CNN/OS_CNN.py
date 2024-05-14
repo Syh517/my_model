@@ -73,37 +73,36 @@ def creak_layer_mask(layer_parameter_list):
     init_bias = np.concatenate(bias_list, axis=0)
     return mask.astype(np.float32), init_weight.astype(np.float32), init_bias.astype(np.float32)
 
-    
+
 class build_layer_with_layer_parameter(nn.Module):
-    def __init__(self,layer_parameters):
+    def __init__(self, layer_parameters):
         super(build_layer_with_layer_parameter, self).__init__()
 
-        os_mask, init_weight, init_bias= creak_layer_mask(layer_parameters)
-        
-        
-        in_channels = os_mask.shape[1] 
-        out_channels = os_mask.shape[0] 
+        os_mask, init_weight, init_bias = creak_layer_mask(layer_parameters)
+
+        in_channels = os_mask.shape[1]
+        out_channels = os_mask.shape[0]
         max_kernel_size = os_mask.shape[-1]
 
-        self.weight_mask = nn.Parameter(torch.from_numpy(os_mask),requires_grad=False)
-        
-        self.padding = nn.ConstantPad1d((int((max_kernel_size-1)/2), int(max_kernel_size/2)), 0)
-         
-        self.conv1d = torch.nn.Conv1d(in_channels=in_channels, out_channels=out_channels, kernel_size=max_kernel_size)
-        self.conv1d.weight = nn.Parameter(torch.from_numpy(init_weight),requires_grad=True)
-        self.conv1d.bias =  nn.Parameter(torch.from_numpy(init_bias),requires_grad=True)
+        self.weight_mask = nn.Parameter(torch.from_numpy(os_mask), requires_grad=False)
 
-        self.bn = nn.BatchNorm1d(num_features=out_channels) #批规范化
-    
+        self.padding = nn.ConstantPad1d((int((max_kernel_size - 1) / 2), int(max_kernel_size / 2)), 0)
+
+        self.conv1d = torch.nn.Conv1d(in_channels=in_channels, out_channels=out_channels, kernel_size=max_kernel_size)
+        self.conv1d.weight = nn.Parameter(torch.from_numpy(init_weight), requires_grad=True)
+        self.conv1d.bias = nn.Parameter(torch.from_numpy(init_bias), requires_grad=True)
+
+        self.bn = nn.BatchNorm1d(num_features=out_channels)  # 批规范化
+
     def forward(self, X):
-        self.conv1d.weight.data = self.conv1d.weight*self.weight_mask
-        #self.conv1d.weight.data.mul_(self.weight_mask)
+        self.conv1d.weight.data = self.conv1d.weight * self.weight_mask
+        # self.conv1d.weight.data.mul_(self.weight_mask)
         result_1 = self.padding(X)
         result_2 = self.conv1d(result_1)
         result_3 = self.bn(result_2)
         result = F.relu(result_3)
-        return result    
-    
+        return result
+
 class OS_CNN(nn.Module):
     def __init__(self,layer_parameter_list,n_class,few_shot = True): #设置架构
         super(OS_CNN, self).__init__()

@@ -5,6 +5,7 @@ import math
 import numpy as np
 from .OS_block import OS_block
 from Classifiers.AFF import MS_CAM
+from Classifiers.LGFF import LGFF
 
 def layer_parameter_list_input_change(layer_parameter_list, input_channel):
     
@@ -82,6 +83,10 @@ class OS_CNN_res(nn.Module):
         # MS_CAM特征融合
         self.fusion_mode = MS_CAM(out_put_channel_numebr)
 
+        # LGFF特征融合
+        ffn_expansion_factor = 1
+        self.fusion_mode2 = LGFF(out_put_channel_numebr, out_put_channel_numebr, ffn_expansion_factor, bias=False)
+
 
         self.averagepool = nn.AdaptiveAvgPool1d(1)
         self.hidden = nn.Linear(out_put_channel_numebr, n_class)
@@ -100,7 +105,7 @@ class OS_CNN_res(nn.Module):
         # 新的MS_CAM特征融合方法
         X = torch.concat((temp1, temp2), 2)
         X = X.unsqueeze_(2)
-        X = self.fusion_mode(X)
+        X = self.fusion_mode2(X)
         X = X.squeeze_(2)
 
 

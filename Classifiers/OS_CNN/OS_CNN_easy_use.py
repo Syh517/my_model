@@ -78,7 +78,6 @@ class OS_CNN_easy_use():
         input_shape = X_train.shape[-1]
         n_class = max(y_train) + 1
         receptive_field_shape= min(int(X_train.shape[-1]/4),self.Max_kernel_size)  #感受野可能需要修改
-        receptive_field_shape=89
 
         # generate parameter list
         layer_parameter_list = generate_layer_parameter_list(self.start_kernel_size,

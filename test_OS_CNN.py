@@ -18,7 +18,7 @@ dataset_name='ServerMachineDataset'
 
 
 if __name__ == '__main__':
-    variables = io.loadmat(save_path + 'machine-1-8.mat')
+    variables = io.loadmat(save_path + 'machine-1-2.mat')
     X1_train = variables['A'] #读取时序数据X_train
     X2_train = variables['B'] #读取MTF矩阵X_trian
     y_train = variables['C'][0] #读取标签y_train
@@ -27,7 +27,7 @@ if __name__ == '__main__':
     X2_train = np.float32(X2_train)
     y_train = np.int64(y_train)
 
-    variables = io.loadmat(save_path + 'machine-2-4.mat')
+    variables = io.loadmat(save_path + 'machine-1-3.mat')
     X1_test = variables['A'] #读取时序数据X_test
     X2_test = variables['B']  # 读取MTF矩阵X_test
     y_test = variables['C'][0] #读取标签y_test
@@ -62,7 +62,7 @@ if __name__ == '__main__':
     # TwoNet_Concat
     # TwoNet_res_Concat
 
-    model = TwoNet_res_Concat(
+    model = TwoNet_res_MS_CAM(
         Result_log_folder=Result_log_folder,  # the Result_log_folder
         dataset_name=dataset_name,  # dataset_name for creat log under Result_log_folder
         device="cuda:0",  # Gpu

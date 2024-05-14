@@ -188,10 +188,10 @@ dataset_name_list = [
     # '2-1',
     # '2-2',
     # '2-3',
-    '2-4',
-    # '2-5',
+    # '2-4',
+    '2-5',
     # '2-6',
-    # '2-7',
+    '2-7',
     # '2-8',
     # '2-9',
     # '3-1',
@@ -210,7 +210,7 @@ dataset_name_list = [
 
 if __name__ == '__main__':
 
-    N=2500
+    N=20000
     #设置时间戳长度和分类的桶数
     n_timestamps =N
     n_bins = 8
@@ -238,7 +238,7 @@ if __name__ == '__main__':
         print(save_path + 'machine-'+dataset_name+'.mat')
 
 
-    variables = io.loadmat(save_path + 'machine-'+'2-4'+'.mat')
+    variables = io.loadmat(save_path + 'machine-'+'2-5'+'.mat')
     print(variables)
     print(variables['A'].shape)
     print(variables['B'].shape)

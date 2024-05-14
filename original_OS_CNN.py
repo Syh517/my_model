@@ -1,4 +1,5 @@
 from Classifiers.OS_CNN.OS_CNN_res_easy_use import OS_CNN_easy_use as OS_CNN_res_easy_use
+from Classifiers.OS_CNN.CNN_easy_use import OS_CNN_easy_use as CNN_easy_use
 import numpy as np
 from scipy import io
 from Classifiers.metric import metrics
@@ -10,14 +11,14 @@ dataset_name='ServerMachineDataset'
 
 
 if __name__ == '__main__':
-    variables = io.loadmat(save_path + 'machine-1-8.mat')
-    # X_train = variables['A'] #读取时序数据X_train
-    X_train=variables['B'] #读取MTF矩阵X_trian
+    variables = io.loadmat(save_path + 'machine-1-2.mat')
+    X_train = variables['A'] #读取时序数据X_train
+    # X_train=variables['B'] #读取MTF矩阵X_trian
     y_train=variables['C'][0]
 
-    variables = io.loadmat(save_path + 'machine-2-4.mat')
-    # X_test = variables['A'] #读取时序数据X_test
-    X_test = variables['B']  # 读取MTF矩阵X_test
+    variables = io.loadmat(save_path + 'machine-1-3.mat')
+    X_test = variables['A'] #读取时序数据X_test
+    # X_test = variables['B']  # 读取MTF矩阵X_test
     y_test=variables['C'][0]
 
     X_train=np.float32(X_train)
@@ -35,7 +36,9 @@ if __name__ == '__main__':
 
     # creat model and log save place
 
-    model = OS_CNN_res_easy_use(
+    # CNN_easy_use
+    # OS_CNN_res_easy_use
+    model = CNN_easy_use(
         Result_log_folder=Result_log_folder,  # the Result_log_folder
         dataset_name=dataset_name,  # dataset_name for creat log under Result_log_folder
         device="cuda:0",  # Gpu
