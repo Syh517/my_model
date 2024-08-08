@@ -1,6 +1,4 @@
 import os
-from sklearn.metrics import accuracy_score
-from os.path import dirname
 import numpy as np
 import torch
 import torch.nn as nn
@@ -13,6 +11,7 @@ from .OS_CNN_Structure_build import generate_layer_parameter_list
 from .log_manager import eval_condition, eval_model, save_to_log
 from .OS_CNN_res import OS_CNN_res as OS_CNN
 
+import math
 
 class OS_CNN_easy_use():
     
@@ -24,7 +23,7 @@ class OS_CNN_easy_use():
                  paramenter_number_of_layer_list = [8*128, 5*128*256 + 2*256*128], 
                  max_epoch = 2000, 
                  batch_size=16,
-                 print_result_every_x_epoch = 10,
+                 print_result_every_x_epoch = 5,
                  n_OS_layer = 3,
                  lr = None
                 ):
@@ -61,8 +60,7 @@ class OS_CNN_easy_use():
     def fit(self, X_train, y_train, X_val, y_val):
 
         print('code is running on ',self.device)
-        
-        
+
         # covert numpy to pytorch tensor and put into gpu
         X_train = torch.from_numpy(X_train)
         X_train.requires_grad = False
@@ -84,6 +82,8 @@ class OS_CNN_easy_use():
         input_shape = X_train.shape[-1]
         n_class = max(y_train) + 1
         receptive_field_shape= min(int(X_train.shape[-1]/4),self.Max_kernel_size)
+        if receptive_field_shape==0:
+            receptive_field_shape =self.start_kernel_size+1
         
         # generate parameter list
         layer_parameter_list = generate_layer_parameter_list(self.start_kernel_size,
@@ -93,7 +93,8 @@ class OS_CNN_easy_use():
         
         
         torch_OS_CNN = OS_CNN(layer_parameter_list, n_class.item(), self.n_OS_layer,False).to(self.device)
-        
+        self.model=torch_OS_CNN
+
         # save_initial_weight
         torch.save(torch_OS_CNN.state_dict(), self.Initial_model_path)
         
@@ -132,20 +133,27 @@ class OS_CNN_easy_use():
                 torch_OS_CNN.train()
 
                 print('train_Precision:', metric_train['Precision'], '\t train_Recall:', metric_train['Recall'],
-                      '\t train_F1:', metric_train['F1'], '\t train_Accuracy:', metric_train['Accuracy'])
+                      '\t train_F1:', metric_train['F1'], '\t train_Accuracy:', metric_train['Accuracy'],
+                      '\t train_AUC:', metric_train['AUC'])
                 print('test_Precision:', metric_test['Precision'], '\t test_Recall:', metric_test['Recall'],
-                      '\t test_F1:', metric_test['F1'], '\t test_Accuracy:', metric_test['Accuracy'])
+                      '\t test_F1:', metric_test['F1'], '\t test_Accuracy:', metric_test['Accuracy'], '\t test_AUC:',
+                      metric_test['AUC'])
                 print('loss:', output.item())
-                sentence = 'train_F1=\t' + str(metric_train['F1']) + '\t test_F1=\t' + str(metric_test['F1'])
 
-                print('log saved at:')
-                save_to_log(sentence,self.Result_log_folder, self.dataset_name)
-                torch.save(torch_OS_CNN.state_dict(), self.model_save_path)
+                # sentence = 'train_F1=\t' + str(metric_train['F1']) + '\t test_F1=\t' + str(metric_test['F1'])
+                # print('log saved at:')
+                # save_to_log(sentence,self.Result_log_folder, self.dataset_name)
+                # torch.save(torch_OS_CNN.state_dict(), self.model_save_path)
          
-        torch.save(torch_OS_CNN.state_dict(), self.model_save_path)
+        # torch.save(torch_OS_CNN.state_dict(), self.model_save_path)
         self.OS_CNN = torch_OS_CNN
 
-        
+        # explainer = shap.GradientExplainer(torch_OS_CNN, X_test, local_smoothing=0)
+        # shap_values = explainer.shap_values(X_test,nsamples=10)
+        # shap.force_plot(explainer.expected_value[0], shap_values[0], X_test)
+        # plt.show()
+        # print(shap_values)
+
         
     def predict(self, X_test):
         
@@ -161,15 +169,30 @@ class OS_CNN_easy_use():
         
         self.OS_CNN.eval()
         
-        predict_list = np.array([])
+        # predict_list = np.array([])
+        predict_list=[]
         for sample in test_loader:
             y_predict = self.OS_CNN(sample[0])
             y_predict = y_predict.detach().cpu().numpy()
-            y_predict = np.argmax(y_predict, axis=1)
-            predict_list = np.concatenate((predict_list, y_predict), axis=0)
-            
-        return predict_list
-        
+            # y_predict = np.argmax(y_predict, axis=1)
+            # predict_list = np.concatenate((predict_list, y_predict), axis=0)
+            predict_list.append(y_predict)
+
+        y_predict=np.concatenate(predict_list)
+
+        ymin = np.min(y_predict)
+        ymax = np.max(y_predict)
+        halfrange = math.ceil(max(abs(ymin), abs(ymax)))
+
+        y_prob = y_predict + halfrange
+        for yi in y_prob:
+            sum = yi[0] + yi[1]
+            yi[0] = yi[0] / sum
+            yi[1] = yi[1] / sum
+
+        return y_prob
+
+
         
         
         

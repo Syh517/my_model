@@ -1,7 +1,11 @@
 import os
 import numpy as np
+from sklearn import metrics
+import torch.nn as nn
+import torch
+from torch.utils.data import Dataset, DataLoader, TensorDataset
 
-def metrics(y_true,y_pred):
+def metric(y_true,y_pred):
     # TP,TN,FP,FN,precision,recall,F1
     TP=0
     TN=0
@@ -18,7 +22,6 @@ def metrics(y_true,y_pred):
         else: # y_true[i] ==0 and y_pred[i] ==1
             FN+=1
 
-    print(TP,TN,FP,FN)
     if TP+FP==0:
         Precision='NULL'
     else:
@@ -34,12 +37,19 @@ def metrics(y_true,y_pred):
     else:
         F1=2*Precision*Recall/(Precision+Recall)
 
-    Accuracy=(TP+TN)/(TP+TN+FP+FN)
+    # Precision = TP / (TP + FP + 0.00001)
+    # Recall = TP / (TP + FN + 0.00001)
+    # F1 = 2 * Precision * Recall / (Precision + Recall + 0.00001)
+    Accuracy=(TP+TN)/(TP+TN+FP+FN+ 0.00001)
+    AUC=metrics.roc_auc_score(y_true, y_pred)
 
+
+    print(TP,TN,FP,FN)
     t= {}
     t['Precision']=Precision
     t['Recall']=Recall
     t['F1']=F1
     t['Accuracy'] =Accuracy
+    t['AUC']=AUC
 
     return t

@@ -24,7 +24,7 @@ class OS_CNN_easy_use():
                  paramenter_number_of_layer_list = [8*128, 5*128*256 + 2*256*128], 
                  max_epoch = 2000, 
                  batch_size=16,
-                 print_result_every_x_epoch = 10,
+                 print_result_every_x_epoch = 5,
                  n_OS_layer = 3, #可以修改层数
                  lr = None
                 ):
@@ -99,7 +99,9 @@ class OS_CNN_easy_use():
 
         n_class = max(y_train) + 1
         receptive_field_shape= min(int(X1_train.shape[-1]/4),int(X2_train.shape[-1]/4),self.Max_kernel_size)
-        
+        if receptive_field_shape==0:
+            receptive_field_shape =self.start_kernel_size+1
+
         # generate parameter list
         layer_parameter_list = generate_layer_parameter_list(self.start_kernel_size,
                                                              receptive_field_shape,
@@ -147,17 +149,19 @@ class OS_CNN_easy_use():
                 torch_OS_CNN.train()
 
                 print('train_Precision:', metric_train['Precision'], '\t train_Recall:', metric_train['Recall'],
-                      '\t train_F1:', metric_train['F1'], '\t train_Accuracy:', metric_train['Accuracy'])
+                      '\t train_F1:', metric_train['F1'], '\t train_Accuracy:', metric_train['Accuracy'],
+                      '\t train_AUC:', metric_train['AUC'])
                 print('test_Precision:', metric_test['Precision'], '\t test_Recall:', metric_test['Recall'],
-                      '\t test_F1:', metric_test['F1'], '\t test_Accuracy:', metric_test['Accuracy'])
+                      '\t test_F1:', metric_test['F1'], '\t test_Accuracy:', metric_test['Accuracy'], '\t test_AUC:',
+                      metric_test['AUC'])
                 print('loss:', output.item())
-                sentence = 'train_F1=\t' + str(metric_train['F1']) + '\t test_F1=\t' + str(metric_test['F1'])
 
-                print('log saved at:')
-                save_to_log(sentence,self.Result_log_folder, self.dataset_name)
-                torch.save(torch_OS_CNN.state_dict(), self.model_save_path)
+                # sentence = 'train_F1=\t' + str(metric_train['F1']) + '\t test_F1=\t' + str(metric_test['F1'])
+                # print('log saved at:')
+                # save_to_log(sentence,self.Result_log_folder, self.dataset_name)
+                # torch.save(torch_OS_CNN.state_dict(), self.model_save_path)
          
-        torch.save(torch_OS_CNN.state_dict(), self.model_save_path)
+        # torch.save(torch_OS_CNN.state_dict(), self.model_save_path)
         self.OS_CNN = torch_OS_CNN
 
         

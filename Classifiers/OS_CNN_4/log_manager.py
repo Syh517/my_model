@@ -1,6 +1,6 @@
 import os
 import numpy as np
-from Classifiers.metric import metrics
+from Classifiers.metric import metric
 
 
 def eval_condition(iepoch,print_result_every_x_epoch):
@@ -19,7 +19,7 @@ def eval_model(model, dataloader):
         y_predict = np.argmax(y_predict, axis=1)
         predict_list = np.concatenate((predict_list, y_predict), axis=0)
         label_list = np.concatenate((label_list, sample[1].detach().cpu().numpy()), axis=0)
-    t = metrics(label_list, predict_list)
+    t = metric(label_list, predict_list)
     return t
 
 def eval_model_2(model, dataloader):
@@ -31,7 +31,7 @@ def eval_model_2(model, dataloader):
         y_predict = np.argmax(y_predict, axis=1)
         predict_list = np.concatenate((predict_list, y_predict), axis=0)
         label_list = np.concatenate((label_list, sample[2].detach().cpu().numpy()), axis=0)
-    t = metrics(label_list, predict_list)
+    t = metric(label_list, predict_list)
     return t
 
 def save_to_log(sentence, Result_log_folder, dataset_name):

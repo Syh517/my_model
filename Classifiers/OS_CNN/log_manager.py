@@ -1,6 +1,6 @@
 import os
 import numpy as np
-from Classifiers.metric import metrics
+from Classifiers.metric import metric
 
 
 def eval_condition(iepoch,print_result_every_x_epoch):
@@ -19,7 +19,7 @@ def eval_model(model, dataloader):
         y_predict = np.argmax(y_predict, axis=1) #返回一个numpy数组中最大值的索引值
         predict_list = np.concatenate((predict_list, y_predict), axis=0)
         label_list = np.concatenate((label_list, sample[1].detach().cpu().numpy()), axis=0)
-    t = metrics(label_list, predict_list)
+    t = metric(label_list, predict_list)
     return t
 
 

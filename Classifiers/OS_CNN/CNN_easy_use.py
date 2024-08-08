@@ -1,6 +1,4 @@
 import os
-from sklearn.metrics import accuracy_score
-from os.path import dirname
 import numpy as np
 import torch
 import torch.nn as nn
